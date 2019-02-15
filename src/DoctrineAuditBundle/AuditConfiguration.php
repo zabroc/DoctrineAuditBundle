@@ -1,8 +1,8 @@
 <?php
 
-namespace DH\DoctrineAuditBundle;
+namespace WithAlex\DoctrineAuditBundle;
 
-use DH\DoctrineAuditBundle\User\UserProviderInterface;
+use WithAlex\DoctrineAuditBundle\User\UserProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class AuditConfiguration

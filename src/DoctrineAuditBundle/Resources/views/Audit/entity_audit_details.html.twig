@@ -21,7 +21,7 @@
 
 {% import _self as audit_viewer %}
 
-{% block dh_doctrine_audit_content %}
+{% block with_alex_doctrine_audit_content %}
 {% set diffs = entry.getDiffs() %}
     <h1>Entity #{{ entry.getObjectId() }} changes ({{ entry.getType() }})</h1>
 
@@ -73,4 +73,4 @@
         </tbody>
     </table>
 {% endif %}
-{% endblock dh_doctrine_audit_content %}
+{% endblock with_alex_doctrine_audit_content %}

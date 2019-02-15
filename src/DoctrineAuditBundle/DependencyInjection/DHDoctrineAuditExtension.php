@@ -1,6 +1,6 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\DependencyInjection;
+namespace WithAlex\DoctrineAuditBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,6 +20,6 @@ class DHDoctrineAuditExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
 
-        $container->setParameter('dh_doctrine_audit.configuration', $config);
+        $container->setParameter('with_alex_doctrine_audit.configuration', $config);
     }
 }

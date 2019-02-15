@@ -1,8 +1,8 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\EventSubscriber;
+namespace WithAlex\DoctrineAuditBundle\EventSubscriber;
 
-use DH\DoctrineAuditBundle\AuditConfiguration;
+use WithAlex\DoctrineAuditBundle\AuditConfiguration;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Tools\Event\GenerateSchemaTableEventArgs;

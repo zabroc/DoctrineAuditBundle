@@ -1,45 +1,45 @@
 services:
-  dh_doctrine_audit.user_provider:
-    class: DH\DoctrineAuditBundle\User\TokenStorageUserProvider
+  with_alex_doctrine_audit.user_provider:
+    class: WithAlex\DoctrineAuditBundle\User\TokenStorageUserProvider
     arguments: ["@security.helper"]
     public: true
 
-  dh_doctrine_audit.configuration:
-    class: DH\DoctrineAuditBundle\AuditConfiguration
-    arguments: ["%dh_doctrine_audit.configuration%", "@dh_doctrine_audit.user_provider", "@request_stack"]
+  with_alex_doctrine_audit.configuration:
+    class: WithAlex\DoctrineAuditBundle\AuditConfiguration
+    arguments: ["%with_alex_doctrine_audit.configuration%", "@with_alex_doctrine_audit.user_provider", "@request_stack"]
     public: true
 
-  DH\DoctrineAuditBundle\AuditConfiguration:
-    alias: dh_doctrine_audit.configuration
+  WithAlex\DoctrineAuditBundle\AuditConfiguration:
+    alias: with_alex_doctrine_audit.configuration
     public: true
 
-  dh_doctrine_audit.reader:
-    class: DH\DoctrineAuditBundle\AuditReader
-    arguments: ["@dh_doctrine_audit.configuration", "@doctrine.orm.default_entity_manager"]
+  with_alex_doctrine_audit.reader:
+    class: WithAlex\DoctrineAuditBundle\AuditReader
+    arguments: ["@with_alex_doctrine_audit.configuration", "@doctrine.orm.default_entity_manager"]
     public: true
 
-  DH\DoctrineAuditBundle\AuditReader:
-    alias: dh_doctrine_audit.reader
+  WithAlex\DoctrineAuditBundle\AuditReader:
+    alias: with_alex_doctrine_audit.reader
     public: true
 
-  dh_doctrine_audit.event_subscriber.audit:
-    class: DH\DoctrineAuditBundle\EventSubscriber\AuditSubscriber
-    arguments: ["@dh_doctrine_audit.configuration"]
+  with_alex_doctrine_audit.event_subscriber.audit:
+    class: WithAlex\DoctrineAuditBundle\EventSubscriber\AuditSubscriber
+    arguments: ["@with_alex_doctrine_audit.configuration"]
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
-  dh_doctrine_audit.event_subscriber.create_schema:
-    class: DH\DoctrineAuditBundle\EventSubscriber\CreateSchemaListener
-    arguments: ["@dh_doctrine_audit.configuration"]
+  with_alex_doctrine_audit.event_subscriber.create_schema:
+    class: WithAlex\DoctrineAuditBundle\EventSubscriber\CreateSchemaListener
+    arguments: ["@with_alex_doctrine_audit.configuration"]
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
-  dh_doctrine_audit.twig_extension:
-    class: DH\DoctrineAuditBundle\Twig\Extension\TwigExtension
+  with_alex_doctrine_audit.twig_extension:
+    class: WithAlex\DoctrineAuditBundle\Twig\Extension\TwigExtension
     arguments: ['@doctrine']
     tags:
       - { name: twig.extension }
 
-  DH\DoctrineAuditBundle\Command\CleanAuditLogsCommand:
+  WithAlex\DoctrineAuditBundle\Command\CleanAuditLogsCommand:
     tags:
       - { name: 'console.command', command: 'audit:clean' }

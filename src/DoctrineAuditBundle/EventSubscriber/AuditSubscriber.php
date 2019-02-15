@@ -1,10 +1,10 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\EventSubscriber;
+namespace WithAlex\DoctrineAuditBundle\EventSubscriber;
 
-use DH\DoctrineAuditBundle\AuditConfiguration;
-use DH\DoctrineAuditBundle\DBAL\AuditLogger;
-use DH\DoctrineAuditBundle\User\UserInterface;
+use WithAlex\DoctrineAuditBundle\AuditConfiguration;
+use WithAlex\DoctrineAuditBundle\DBAL\AuditLogger;
+use WithAlex\DoctrineAuditBundle\User\UserInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Logging\LoggerChain;
 use Doctrine\DBAL\Logging\SQLLogger;

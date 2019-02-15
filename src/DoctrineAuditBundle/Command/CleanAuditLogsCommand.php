@@ -1,8 +1,8 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\Command;
+namespace WithAlex\DoctrineAuditBundle\Command;
 
-use DH\DoctrineAuditBundle\AuditReader;
+use WithAlex\DoctrineAuditBundle\AuditReader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -71,7 +71,7 @@ class CleanAuditLogsCommand extends Command implements ContainerAwareInterface
         /**
          * @var AuditReader
          */
-        $reader = $this->container->get('dh_doctrine_audit.reader');
+        $reader = $this->container->get('with_alex_doctrine_audit.reader');
         $entities = $reader->getEntities();
 
         $message = sprintf(

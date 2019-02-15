@@ -1,6 +1,6 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\User;
+namespace WithAlex\DoctrineAuditBundle\User;
 
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Security\Core\Security;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DH\DoctrineAuditBundle;
+namespace WithAlex\DoctrineAuditBundle;
 
 use Doctrine\ORM\EntityManagerInterface;
 

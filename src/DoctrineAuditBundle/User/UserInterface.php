@@ -1,6 +1,6 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\User;
+namespace WithAlex\DoctrineAuditBundle\User;
 
 interface UserInterface
 {

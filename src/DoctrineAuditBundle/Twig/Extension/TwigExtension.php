@@ -1,6 +1,6 @@
 <?php
 
-namespace DH\DoctrineAuditBundle\Twig\Extension;
+namespace WithAlex\DoctrineAuditBundle\Twig\Extension;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

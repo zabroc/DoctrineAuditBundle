@@ -67,7 +67,7 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
-            new DH\DoctrineAuditBundle\DHDoctrineAuditBundle(),
+            new WithAlex\DoctrineAuditBundle\DHDoctrineAuditBundle(),
         );
 
         // ...
@@ -87,8 +87,8 @@ By default, DoctrineAuditBundle won't audit any entity, you have to configure wh
 
 ```yaml
 // app/config/config.yml (symfony < 3.4)
-// config/packages/dh_doctrine_audit.yaml (symfony >= 3.4)
-dh_doctrine_audit:
+// config/packages/with_alex_doctrine_audit.yaml (symfony >= 3.4)
+with_alex_doctrine_audit:
     entities:
         MyBundle\Entity\MyAuditedEntity1: ~
         MyBundle\Entity\MyAuditedEntity2: ~
@@ -99,8 +99,8 @@ Though it is possible to exclude some of them from the audit process.
 
 ```yaml
 // app/config/config.yml (symfony < 3.4)
-// config/packages/dh_doctrine_audit.yaml (symfony >= 3.4)
-dh_doctrine_audit:
+// config/packages/with_alex_doctrine_audit.yaml (symfony >= 3.4)
+with_alex_doctrine_audit:
     entities:
         MyBundle\Entity\MyAuditedEntity1: ~   # all MyAuditedEntity1 properties are audited
         MyBundle\Entity\MyAuditedEntity2:
@@ -113,8 +113,8 @@ It is also possible to specify properties that are globally ignored by the audit
 
 ```yaml
 // app/config/config.yml (symfony < 3.4)
-// config/packages/dh_doctrine_audit.yaml (symfony >= 3.4)
-dh_doctrine_audit:
+// config/packages/with_alex_doctrine_audit.yaml (symfony >= 3.4)
+with_alex_doctrine_audit:
     ignored_columns:    # properties ignored by the audit process in any audited entity
         - createdAt
         - updatedAt
@@ -127,8 +127,8 @@ By default, the prefix is empty and the suffix is `_audit`. Though, they can be 
 
 ```yaml
 // app/config/config.yml (symfony < 3.4)
-// config/packages/dh_doctrine_audit.yaml (symfony >= 3.4)
-dh_doctrine_audit:
+// config/packages/with_alex_doctrine_audit.yaml (symfony >= 3.4)
+with_alex_doctrine_audit:
     table_prefix: ''
     table_suffix: '_audit'
 ```
@@ -184,7 +184,7 @@ Add the following routes to the routing configuration to enable the included aud
 ```yaml
 // app/config/routing.yml (symfony < 3.4)
 // config/routes.yaml (symfony >= 3.4)
-dh_doctrine_audit:
+with_alex_doctrine_audit:
     resource: "@DHDoctrineAuditBundle/Controller/"
     type: annotation
 ``` 
@@ -193,11 +193,11 @@ It is possible to filter results by event type by calling `AuditReader::filterBy
 
 ````php
     /**
-     * @Route("/audit/details/{entity}/{id}", name="dh_doctrine_audit_show_audit_entry", methods={"GET"})
+     * @Route("/audit/details/{entity}/{id}", name="with_alex_doctrine_audit_show_audit_entry", methods={"GET"})
      */
     public function showAuditEntryAction(string $entity, int $id)
     {
-        $reader = $this->container->get('dh_doctrine_audit.reader');
+        $reader = $this->container->get('with_alex_doctrine_audit.reader');
         
         $data = $reader
              ->filterBy(AuditReader::UPDATE)   // add this to only get `update` entries.
@@ -223,12 +223,12 @@ Available constants are:
 ### Custom user provider
 
 If you don't use Symfony's `TokenStorage` to save your current user, you can configure a custom user provider. You just
-need to implement the `UserProviderInterface` and configure it as a service named `dh_doctrine_audit.user_provider`.
+need to implement the `UserProviderInterface` and configure it as a service named `with_alex_doctrine_audit.user_provider`.
 
 ````php
-use DH\DoctrineAuditBundle\User\User;
-use DH\DoctrineAuditBundle\User\UserInterface;
-use DH\DoctrineAuditBundle\User\UserProviderInterface;
+use WithAlex\DoctrineAuditBundle\User\User;
+use WithAlex\DoctrineAuditBundle\User\UserInterface;
+use WithAlex\DoctrineAuditBundle\User\UserProviderInterface;
 
 class CustomUserProvider implements UserProviderInterface
 {
@@ -244,7 +244,7 @@ Then add this to your `services.yaml` file:
 
 ````yml
 services:
-    dh_doctrine_audit.user_provider:
+    with_alex_doctrine_audit.user_provider:
         class: App\CustomUserProvider
 ````
 
@@ -257,7 +257,7 @@ You can then re-enable audit logging at runtime by calling `AuditConfiguration::
 
 **Warning:** disabling audit logging for an entity will make its audit logs incomplete/partial (no change applied to specified entity is logged in the relevant audit table while audit logging is disabled for that entity).
 
-To disable auditing for an entity, you first have to inject the `dh_doctrine_audit.configuration` service in your class, then use:
+To disable auditing for an entity, you first have to inject the `with_alex_doctrine_audit.configuration` service in your class, then use:
 
 ````php
 $auditConfiguration->disableAuditFor(MyAuditedEntity1::class);
@@ -273,7 +273,7 @@ You can also disable audit logging for an entity by default and only enable audi
 this to your configuration file:
 
 ````yml
-dh_doctrine_audit:
+with_alex_doctrine_audit:
     entities:
         MyBundle\Entity\MyAuditedEntity1:
             enabled: false
