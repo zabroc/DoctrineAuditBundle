@@ -1,0 +1,13 @@
+{% import 'SyliusUiBundle:Macro:headers.html.twig' as headers %}
+
+<div class="ui stackable two column grid">
+    <div class="column">
+        {{ headers.default(
+            'entity_historic'|trans([], 'audit')    ,
+            'file alternate outline',
+            'history_operation'|transchoice(entries|length, {'%entity%': entity, '%operationsCount%': entries|length}, 'audit')
+        ) }}
+
+        {% include '@WithAlexDoctrineAudit/SyliusUI/entity_history/_breadcrumb.html.twig' %}
+    </div>
+</div>

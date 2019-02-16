@@ -87,6 +87,10 @@ class CreateSchemaListener implements EventSubscriber
             'notnull' => false,
             'length' => 45,
         ]);
+        $auditTable->addColumn('context', 'json_array', [
+            'default' => null,
+            'notnull' => false,
+        ]);
         $auditTable->addColumn('created_at', 'datetime', [
             'notnull' => true,
         ]);

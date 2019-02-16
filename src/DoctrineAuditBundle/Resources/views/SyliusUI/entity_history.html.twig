@@ -1,0 +1,39 @@
+{% extends "backend/layout.html.twig" %}
+
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+{% import '@WithAlexDoctrineAudit/SyliusUI/Macro/methods.html.twig' as methods %}
+
+{% block title %}{{ parent() }} {{ 'entity_historic'|trans([], 'audit') }}{% endblock %}
+
+{% block content %}
+    {% include '@WithAlexDoctrineAudit/SyliusUI/entity_history/_header.html.twig' with {entity: entity, entries: entries} %}
+
+    <table class="ui sortable stackable celled table">
+        <thead>
+        <th>{{ 'id'|trans([], 'audit') }}</th>
+        <th>{{ 'type'|trans([], 'audit') }}</th>
+        <th>{{ 'object_id'|trans([], 'audit') }}</th>
+        <th>{{ 'user_id'|trans([], 'audit') }}</th>
+        <th>{{ 'username'|trans([], 'audit') }}</th>
+        <th>{{ 'ip'|trans([], 'audit') }}</th>
+        <th>{{ 'context'|trans([], 'audit') }}</th>
+        <th>{{ 'created_at'|trans([], 'audit') }}</th>
+        <th>{{ 'actions'|trans([], 'audit') }}</th>
+        </thead>
+        <tbody>
+        {% for entry in entries %}
+            <tr class="item">
+                <td><a href="{{ path('with_alex_doctrine_audit_show_audit_entry', { 'entity': entity, 'id': entry.id }) }}">{{ entry.id }}</a></td>
+                <td>{{ entry.getType()|trans([], 'audit') }}</td>
+                <td><a href="{{ path('with_alex_doctrine_audit_show_entity_history', { 'entity': entity, 'id': entry.getObjectId() }) }}">{{ entry.getObjectId() }}</a></td>
+                <td>{{ entry.getUserId() }}</td>
+                <td>{{ entry.getUsername() }}</td>
+                <td>{{ entry.getIp() }}</td>
+                <td>{{ methods.label(entry.context.method) }}:{{ entry.context.requestUri }}</td>
+                <td>{{ entry.getCreatedAt()|date }}</td>
+                <td>{{ buttons.show(path('with_alex_doctrine_audit_show_audit_entry', { 'entity': entity, 'id': entry.id }), 'show'|trans([], 'audit')) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

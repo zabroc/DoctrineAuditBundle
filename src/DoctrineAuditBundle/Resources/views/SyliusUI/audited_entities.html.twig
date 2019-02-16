@@ -1,0 +1,26 @@
+{% extends "backend/layout.html.twig" %}
+
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+
+{% block title %}{{ parent() }} {{ 'audit'|trans([], 'audit') }}{% endblock %}
+
+{% block content %}
+    {% include '@WithAlexDoctrineAudit/SyliusUI/audited_entities/_header.html.twig' %}
+
+    <table class="ui sortable stackable celled table">
+        <thead>
+        <th>{{ 'class'|trans([], 'audit')|title }}</th>
+        <th>{{ 'actions'|trans([], 'audit')|title }}</th>
+        </thead>
+        <tbody>
+        {% for entity, table in audited %}
+            <tr class="item">
+                <td>{{ entity|escape }}</td>
+                <td>
+                    {{ buttons.show(path('with_alex_doctrine_audit_show_entity_history', { 'entity': entity }), 'details'|trans([], 'audit')|title) }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

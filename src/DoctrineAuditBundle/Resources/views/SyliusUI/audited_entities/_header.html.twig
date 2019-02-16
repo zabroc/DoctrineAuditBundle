@@ -1,0 +1,12 @@
+{% import 'SyliusUiBundle:Macro:headers.html.twig' as headers %}
+
+<div class="ui stackable two column grid">
+    <div class="column">
+        {{ headers.default(
+            'audit'|trans([], 'audit')|title,
+            'file alternate outline'
+        ) }}
+
+        {% include '@WithAlexDoctrineAudit/SyliusUI/audited_entities/_breadcrumb.html.twig' %}
+    </div>
+</div>

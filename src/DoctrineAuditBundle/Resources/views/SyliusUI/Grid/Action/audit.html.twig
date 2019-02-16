@@ -1,0 +1,5 @@
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+
+{% set path = path('with_alex_doctrine_audit_show_entity_history', {'entity': grid.metadata.parameters.classes.model}) %}
+
+{{ buttons.default(path, 'audit'|trans([], 'audit')|capitalize, '', 'file alternate outline', 'yellow') }}

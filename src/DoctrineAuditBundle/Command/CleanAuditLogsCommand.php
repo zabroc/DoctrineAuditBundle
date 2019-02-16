@@ -23,7 +23,7 @@ class CleanAuditLogsCommand extends Command implements ContainerAwareInterface
 
     private $container;
 
-    protected static $defaultName = 'audit:clean';
+    protected static $defaultName = 'withalex:audit:clean';
 
     protected function configure()
     {

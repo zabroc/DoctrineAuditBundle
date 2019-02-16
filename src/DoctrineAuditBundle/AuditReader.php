@@ -69,6 +69,8 @@ class AuditReader
      * Returns an array of audit table names indexed by entity FQN.
      *
      * @return array
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
     public function getEntities(): array
     {
@@ -88,7 +90,7 @@ class AuditReader
      * Returns an array of audited entries/operations.
      *
      * @param object|string $entity
-     * @param null|int      $id
+     * @param int|null      $id
      * @param int           $page
      * @param int           $pageSize
      *

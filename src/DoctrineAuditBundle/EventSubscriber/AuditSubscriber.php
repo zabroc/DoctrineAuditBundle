@@ -2,6 +2,7 @@
 
 namespace WithAlex\DoctrineAuditBundle\EventSubscriber;
 
+use Symfony\Component\HttpFoundation\RequestStack;
 use WithAlex\DoctrineAuditBundle\AuditConfiguration;
 use WithAlex\DoctrineAuditBundle\DBAL\AuditLogger;
 use WithAlex\DoctrineAuditBundle\User\UserInterface;
@@ -13,10 +14,24 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
+use WithAlex\DoctrineAuditBundle\User\UserProviderInterface;
 
 class AuditSubscriber implements EventSubscriber
 {
+    /**
+     * @var AuditConfiguration
+     */
     private $configuration;
+
+    /**
+     * @var UserProviderInterface
+     */
+    private $userProvider;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
     /**
      * @var SQLLogger
@@ -29,9 +44,14 @@ class AuditSubscriber implements EventSubscriber
     private $associated = [];   // [$source, $target, $mapping]
     private $dissociated = [];  // [$source, $target, $id, $mapping]
 
-    public function __construct(AuditConfiguration $configuration)
-    {
+    public function __construct(
+        AuditConfiguration $configuration,
+        UserProviderInterface $userProvider,
+        RequestStack $requestStack
+    ) {
         $this->configuration = $configuration;
+        $this->userProvider = $userProvider;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -215,6 +235,7 @@ class AuditSubscriber implements EventSubscriber
             'table' => $meta->table['name'],
             'schema' => $meta->table['schema'] ?? null,
             'id' => $this->id($em, $entity),
+            'context' => $this->getContext(),
         ]);
     }
 
@@ -242,6 +263,7 @@ class AuditSubscriber implements EventSubscriber
             'table' => $meta->table['name'],
             'schema' => $meta->table['schema'] ?? null,
             'id' => $this->id($em, $entity),
+            'context' => $this->getContext(),
         ]);
     }
 
@@ -265,6 +287,7 @@ class AuditSubscriber implements EventSubscriber
             'table' => $meta->table['name'],
             'schema' => $meta->table['schema'] ?? null,
             'id' => $id,
+            'context' => $this->getContext(),
         ]);
     }
 
@@ -293,6 +316,7 @@ class AuditSubscriber implements EventSubscriber
             'table' => $meta->table['name'],
             'schema' => $meta->table['schema'] ?? null,
             'id' => $this->id($em, $source),
+            'context' => $this->getContext(),
         ]);
     }
 
@@ -322,6 +346,7 @@ class AuditSubscriber implements EventSubscriber
             'table' => $meta->table['name'],
             'schema' => $meta->table['schema'] ?? null,
             'id' => $this->id($em, $source),
+            'context' => $this->getContext(),
         ]);
     }
 
@@ -344,6 +369,7 @@ class AuditSubscriber implements EventSubscriber
             'blame_id' => ':blame_id',
             'blame_user' => ':blame_user',
             'ip' => ':ip',
+            'context' => ':context',
             'created_at' => ':created_at',
         ];
 
@@ -363,6 +389,7 @@ class AuditSubscriber implements EventSubscriber
         $statement->bindValue('blame_id', $data['blame']['user_id']);
         $statement->bindValue('blame_user', $data['blame']['username']);
         $statement->bindValue('ip', $data['blame']['client_ip']);
+        $statement->bindValue('context', json_encode($data['context']));
         $statement->bindValue('created_at', $dt->format('Y-m-d H:i:s'));
         $statement->execute();
     }
@@ -515,12 +542,12 @@ class AuditSubscriber implements EventSubscriber
         $username = null;
         $client_ip = null;
 
-        $request = $this->configuration->getRequestStack()->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
         if (null !== $request) {
             $client_ip = $request->getClientIp();
         }
 
-        $user = $this->configuration->getUserProvider()->getUser();
+        $user = $this->userProvider->getUser();
         if ($user instanceof UserInterface) {
             $user_id = $user->getId();
             $username = $user->getUsername();
@@ -530,6 +557,18 @@ class AuditSubscriber implements EventSubscriber
             'user_id' => $user_id,
             'username' => $username,
             'client_ip' => $client_ip,
+        ];
+    }
+
+    private function getContext(): array
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        return [
+            'method' => $currentRequest->getMethod(),
+            'requestUri' => $currentRequest->getRequestUri(),
+            'request' => $currentRequest->request->all(),
+            'query' => $currentRequest->query->all(),
         ];
     }
 

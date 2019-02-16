@@ -1,0 +1,14 @@
+{% macro list(array) %}
+    {% import _self as lists %}
+    <ul class="ui list">
+        {% for key, value in array %}
+            <li>
+                <code>{{ key }}</code> :
+                {% if value is iterable %}
+                    {{ lists.list(value) }}
+                {% else %}
+                    <code>{{ value }}</code>
+                {% endif %}
+            </li>
+        {% endfor %}
+{% endmacro %}

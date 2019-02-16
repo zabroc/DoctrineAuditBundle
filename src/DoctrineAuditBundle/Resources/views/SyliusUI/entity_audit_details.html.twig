@@ -1,0 +1,110 @@
+{% extends "backend/layout.html.twig" %}
+
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+{% import '@WithAlexDoctrineAudit/SyliusUI/Macro/list.html.twig' as lists %}
+{% import '@WithAlexDoctrineAudit/SyliusUI/Macro/methods.html.twig' as methods %}
+
+{% macro dump(value, separator) %}
+    {% import _self as audit_viewer %}
+    {% if value is iterable %}
+        {% for k, v in value %}
+            {{ k }}: {{ audit_viewer.dump(v) }}{{ separator|default('<br/>')|raw }}
+        {% endfor %}
+    {% else %}
+        {% if value is same as (true) %}
+            {{- 'true' -}}
+        {% elseif value is same as (false) %}
+            {{- 'false' -}}
+        {% elseif value is null %}
+            {{- 'null' -}}
+        {% else %}
+            {{- value -}}
+        {% endif %}
+    {% endif %}
+{% endmacro dump %}
+
+{% import _self as audit_viewer %}
+
+{% block title %}{{ parent() }} {{ 'audit_details'|trans({}, 'audit')|capitalize }}{% endblock %}
+
+{% block content %}
+    {% set diffs = entry.getDiffs() %}
+
+    {% include '@WithAlexDoctrineAudit/SyliusUI/entity_audit_details/_header.html.twig' with {entry: entry} %}
+
+
+    <h2>{{ methods.label(entry.context.method) }}:<span class="ui grey label">{{ entry.context.requestUri }}</span></h2>
+
+    <div class="ui segment">
+        <div class="ui accordion">
+            <div class="title">
+                <i class="dropdown icon"></i>
+                request
+            </div>
+            <div class="content">
+                <p class="transition visible" style="display: block !important;">
+                    {{ lists.list(entry.context.request) }}
+                </p>
+            </div>
+            <div class="title">
+                <i class="dropdown icon"></i>
+                query
+            </div>
+            <div class="content">
+                <p class="transition visible" style="display: block !important;">
+                    {{ lists.list(entry.context.query) }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {% if entry.getType() in ['associate', 'dissociate'] %}
+        <table class="ui sortable stackable celled table">
+            <thead>
+            <th>{{ 'property'|trans({}, 'audit') }}</th>
+            <th>{{ 'target'|trans({}, 'audit') }}</th>
+            </thead>
+            <tbody>
+            {% for key, value in diffs['target'] %}
+                <tr class="item">
+                    <td>{{ key }}</td>
+                    <td>{{ audit_viewer.dump(value) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% elseif entry.getType() == 'remove' %}
+        <table class="ui sortable stackable celled table">
+            <thead>
+            <th>{{ 'property'|trans({}, 'audit') }}</th>
+            <th>{{ 'target'|trans({}, 'audit') }}</th>
+            </thead>
+            <tbody>
+            {% for key, value in diffs %}
+                <tr class="item">
+                    <td>{{ key }}</td>
+                    <td>{{ audit_viewer.dump(value) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <table class="ui sortable stackable celled table">
+            <thead>
+            <th>{{ 'property'|trans({}, 'audit') }}</th>
+            <th>{{ 'old_value'|trans({}, 'audit') }}</th>
+            <th>{{ 'new_value'|trans({}, 'audit') }}</th>
+            </thead>
+            <tbody>
+            {% for key, values in diffs %}
+                <tr class="item">
+                    <td>{{ key }}</td>
+                    <td>{{ audit_viewer.dump(values['old']) }}</td>
+                    <td>{{ audit_viewer.dump(values['new']) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

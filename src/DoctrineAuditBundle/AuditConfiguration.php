@@ -2,9 +2,9 @@
 
 namespace WithAlex\DoctrineAuditBundle;
 
-use WithAlex\DoctrineAuditBundle\User\UserProviderInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
+/**
+ * Class AuditConfiguration.
+ */
 class AuditConfiguration
 {
     /**
@@ -20,36 +20,23 @@ class AuditConfiguration
     /**
      * @var array
      */
-    private $ignoredColumns = [];
+    private $ignoredEntities = [];
 
     /**
      * @var array
      */
-    private $entities = [];
+    private $ignoredColumns = [];
 
-    /**
-     * @var UserProviderInterface
-     */
-    protected $userProvider;
-
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    public function __construct(array $config, UserProviderInterface $userProvider, RequestStack $requestStack)
+    public function __construct(array $config)
     {
-        $this->userProvider = $userProvider;
-        $this->requestStack = $requestStack;
-
         $this->tablePrefix = $config['table_prefix'];
         $this->tableSuffix = $config['table_suffix'];
-        $this->ignoredColumns = $config['ignored_columns'];
+        $this->ignoredEntities = $config['ignored_entities'];
 
-        if (isset($config['entities']) && !empty($config['entities'])) {
+        if (isset($config['ignored_columns']) && !empty($config['ignored_columns'])) {
             // use entity names as array keys for easier lookup
-            foreach ($config['entities'] as $auditedEntity => $entityOptions) {
-                $this->entities[$auditedEntity] = $entityOptions;
+            foreach ($config['ignored_columns'] as $column => $entities) {
+                $this->ignoredColumns[$column] = $entities;
             }
         }
     }
@@ -63,21 +50,18 @@ class AuditConfiguration
      */
     public function isAudited($entity): bool
     {
-        if (!empty($this->entities)) {
-            foreach ($this->entities as $auditedEntity => $entityOptions) {
-                if (isset($entityOptions['enabled']) && !$entityOptions['enabled']) {
-                    continue;
+        if (!empty($this->ignoredEntities)) {
+            foreach ($this->ignoredEntities as $ignoredEntity) {
+                if (\is_object($entity) && $entity instanceof $ignoredEntity && !is_subclass_of($entity, $ignoredEntity)) {
+                    return false;
                 }
-                if (\is_object($entity) && $entity instanceof $auditedEntity && !is_subclass_of($entity, $auditedEntity)) {
-                    return true;
-                }
-                if (\is_string($entity) && $entity === $auditedEntity) {
-                    return true;
+                if (\is_string($entity) && $entity === $ignoredEntity) {
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -90,11 +74,10 @@ class AuditConfiguration
      */
     public function isAuditedField($entity, $field): bool
     {
-        if (!\in_array($field, $this->ignoredColumns, true) && $this->isAudited($entity)) {
-            $class = \is_object($entity) ? \Doctrine\Common\Util\ClassUtils::getRealClass(\get_class($entity)) : $entity;
-            $entityOptions = $this->entities[$class];
-
-            return !isset($entityOptions['ignored_columns']) || !\in_array($field, $entityOptions['ignored_columns'], true);
+        if ($this->isAudited($entity)) {
+            return !(\array_key_exists($field, $this->ignoredColumns) &&
+                \in_array($entity, $this->ignoredColumns[$field]['entities']))
+            ;
         }
 
         return false;
@@ -125,9 +108,9 @@ class AuditConfiguration
      *
      * @return array
      */
-    public function getIgnoredColumns(): array
+    public function getIgnoredEntities(): array
     {
-        return $this->ignoredColumns;
+        return $this->ignoredEntities;
     }
 
     /**
@@ -135,60 +118,8 @@ class AuditConfiguration
      *
      * @return array
      */
-    public function getEntities(): array
+    public function getIgnoredColumns(): array
     {
-        return $this->entities;
-    }
-
-    /**
-     * Enables auditing for a specific entity.
-     *
-     * @param string $entity Entity class name
-     *
-     * @return $this
-     */
-    public function enableAuditFor(string $entity): self
-    {
-        if (isset($this->entities[$entity])) {
-            $this->entities[$entity]['enabled'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Disables auditing for a specific entity.
-     *
-     * @param string $entity Entity class name
-     *
-     * @return $this
-     */
-    public function disableAuditFor(string $entity): self
-    {
-        if (isset($this->entities[$entity])) {
-            $this->entities[$entity]['enabled'] = false;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the value of userProvider.
-     *
-     * @return UserProviderInterface
-     */
-    public function getUserProvider(): UserProviderInterface
-    {
-        return $this->userProvider;
-    }
-
-    /**
-     * Get the value of requestStack.
-     *
-     * @return RequestStack
-     */
-    public function getRequestStack(): RequestStack
-    {
-        return $this->requestStack;
+        return $this->ignoredColumns;
     }
 }

@@ -1,0 +1,16 @@
+{% macro label(method) -%}
+
+    {% set color = 'grey' %}
+
+    {% if method == 'PUT' %}
+        {% set color = 'yellow' %}
+    {% elseif method == 'GET' %}
+        {% set color = 'blue' %}
+    {% elseif method == 'POST' %}
+        {% set color = 'green' %}
+    {% elseif method == 'DELETE' %}
+        {% set color = 'red' %}
+    {% endif %}
+
+    <span class="ui {{ color }} label">{{ method }}</span>
+{%- endmacro %}s

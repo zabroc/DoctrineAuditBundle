@@ -204,7 +204,7 @@ It is possible to filter results by event type by calling `AuditReader::filterBy
              ->getAudit($entity, $id)
          ;
 
-        return $this->render('@DHDoctrineAudit/Audit/entity_audit_details.html.twig', [
+        return $this->render('@WithAlexDoctrineAudit/Audit/entity_audit_details.html.twig', [
             'entity' => $entity,
             'entry' => $data[0],
         ]);

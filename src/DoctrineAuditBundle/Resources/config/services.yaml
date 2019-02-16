@@ -6,7 +6,7 @@ services:
 
   with_alex_doctrine_audit.configuration:
     class: WithAlex\DoctrineAuditBundle\AuditConfiguration
-    arguments: ["%with_alex_doctrine_audit.configuration%", "@with_alex_doctrine_audit.user_provider", "@request_stack"]
+    arguments: ["%with_alex_doctrine_audit.configuration%"]
     public: true
 
   WithAlex\DoctrineAuditBundle\AuditConfiguration:
@@ -24,7 +24,7 @@ services:
 
   with_alex_doctrine_audit.event_subscriber.audit:
     class: WithAlex\DoctrineAuditBundle\EventSubscriber\AuditSubscriber
-    arguments: ["@with_alex_doctrine_audit.configuration"]
+    arguments: ["@with_alex_doctrine_audit.configuration", , "@with_alex_doctrine_audit.user_provider", "@request_stack"]
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 

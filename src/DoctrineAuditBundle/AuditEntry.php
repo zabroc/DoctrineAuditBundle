@@ -32,6 +32,11 @@ class AuditEntry
      * @var string
      */
     protected $ip;
+
+    /**
+     * @var string
+     */
+    protected $context;
     /**
      * @var string
      */
@@ -113,7 +118,7 @@ class AuditEntry
     }
 
     /**
-     * Get the value of created_at.
+     * Get the value of diff.
      *
      * @return array
      */
@@ -121,4 +126,16 @@ class AuditEntry
     {
         return json_decode($this->diffs, true);
     }
+
+    /**
+     * Get the value of context.
+     *
+     * @return array
+     */
+    public function getContext(): ?array
+    {
+        return json_decode($this->context, true);
+    }
+
+
 }
