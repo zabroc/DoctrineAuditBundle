@@ -351,11 +351,7 @@ class AuditManager
             'discriminator' => $data['discriminator'],
             'transaction_hash' => (string) $data['transaction_hash'],
             'diffs' => json_encode($data['diff']),
-            'blame_id' => $data['blame']['user_id'],
-            'blame_user' => $data['blame']['username'],
-            'blame_user_fqdn' => $data['blame']['user_fqdn'],
-            'blame_user_firewall' => $data['blame']['user_firewall'],
-            'ip' => $data['blame']['client_ip'],
+            'blame_user_type' => $data['blame']['blame_user_type'],
             'created_at' => $dt->format('Y-m-d H:i:s'),
         ];
 

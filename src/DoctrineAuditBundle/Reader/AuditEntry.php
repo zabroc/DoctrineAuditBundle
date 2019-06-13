@@ -30,29 +30,9 @@ class AuditEntry
     protected $diffs;
 
     /**
-     * @var null|int|string
-     */
-    protected $blame_id;
-
-    /**
      * @var string
      */
-    protected $blame_user;
-
-    /**
-     * @var string
-     */
-    protected $blame_user_fqdn;
-
-    /**
-     * @var string
-     */
-    protected $blame_user_firewall;
-
-    /**
-     * @var string
-     */
-    protected $ip;
+    protected $blame_user_type;
 
     /**
      * @var string
@@ -124,49 +104,13 @@ class AuditEntry
     }
 
     /**
-     * Get the value of blame_id.
-     *
-     * @return null|int|string
-     */
-    public function getUserId()
-    {
-        return $this->blame_id;
-    }
-
-    /**
      * Get the value of blame_user.
      *
      * @return null|string
      */
-    public function getUsername(): ?string
+    public function getUserType(): ?string
     {
-        return $this->blame_user;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUserFqdn(): ?string
-    {
-        return $this->blame_user_fqdn;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUserFirewall(): ?string
-    {
-        return $this->blame_user_firewall;
-    }
-
-    /**
-     * Get the value of ip.
-     *
-     * @return string
-     */
-    public function getIp(): ?string
-    {
-        return $this->ip;
+        return $this->blame_user_type;
     }
 
     /**

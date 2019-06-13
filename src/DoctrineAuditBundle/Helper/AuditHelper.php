@@ -133,31 +133,18 @@ class AuditHelper
      */
     public function blame(): array
     {
-        $user_id = null;
-        $username = null;
-        $client_ip = null;
-        $user_fqdn = null;
-        $user_firewall = null;
-
-        $request = $this->configuration->getRequestStack()->getCurrentRequest();
-        if (null !== $request) {
-            $client_ip = $request->getClientIp();
-            $user_firewall = null === $this->configuration->getFirewallMap()->getFirewallConfig($request) ? null : $this->configuration->getFirewallMap()->getFirewallConfig($request)->getName();
-        }
+        $user_type = null;
 
         $user = null === $this->configuration->getUserProvider() ? null : $this->configuration->getUserProvider()->getUser();
+
+        $user_type = 'System';
+
         if ($user instanceof UserInterface) {
-            $user_id = $user->getId();
-            $username = $user->getUsername();
-            $user_fqdn = \get_class($user);
+            $user_type = $user->getId() ? 'User' : 'Unknown User';
         }
 
         return [
-            'user_id' => $user_id,
-            'username' => $username,
-            'client_ip' => $client_ip,
-            'user_fqdn' => $user_fqdn,
-            'user_firewall' => $user_firewall,
+            'user_type' => $user_type
         ];
     }
 
@@ -252,43 +239,12 @@ class AuditHelper
                     'notnull' => false,
                 ],
             ],
-            'blame_id' => [
-                'type' => self::getDoctrineType('STRING'),
-                'options' => [
-                    'default' => null,
-                    'notnull' => false,
-                ],
-            ],
-            'blame_user' => [
+            'blame_user_type' => [
                 'type' => self::getDoctrineType('STRING'),
                 'options' => [
                     'default' => null,
                     'notnull' => false,
                     'length' => 255,
-                ],
-            ],
-            'blame_user_fqdn' => [
-                'type' => self::getDoctrineType('STRING'),
-                'options' => [
-                    'default' => null,
-                    'notnull' => false,
-                    'length' => 255,
-                ],
-            ],
-            'blame_user_firewall' => [
-                'type' => self::getDoctrineType('STRING'),
-                'options' => [
-                    'default' => null,
-                    'notnull' => false,
-                    'length' => 100,
-                ],
-            ],
-            'ip' => [
-                'type' => self::getDoctrineType('STRING'),
-                'options' => [
-                    'default' => null,
-                    'notnull' => false,
-                    'length' => 45,
                 ],
             ],
             'created_at' => [
@@ -321,10 +277,6 @@ class AuditHelper
             'transaction_hash' => [
                 'type' => 'index',
                 'name' => 'transaction_hash_'.md5($tablename).'_idx',
-            ],
-            'blame_id' => [
-                'type' => 'index',
-                'name' => 'blame_id_'.md5($tablename).'_idx',
             ],
             'created_at' => [
                 'type' => 'index',

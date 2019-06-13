@@ -56,8 +56,5 @@
             (<em>{{ helper.dump(target) }}</em>)
         {% endif %}
     {% endif %}
-    by <b>{{ entry.blame_user is null ? 'unknown user' : entry.blame_user }}</b>
-    {% if entry.ip is not empty %}
-        , IP: {{ entry.ip }}
-    {% endif %}
+    by <b>{{ entry.blame_user_type }}</b>
 {% endmacro %}
