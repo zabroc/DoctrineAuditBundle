@@ -43,11 +43,7 @@ class AuditSubscriber implements EventSubscriberInterface
             'discriminator' => ':discriminator',
             'transaction_hash' => ':transaction_hash',
             'diffs' => ':diffs',
-            'blame_id' => ':blame_id',
-            'blame_user' => ':blame_user',
-            'blame_user_fqdn' => ':blame_user_fqdn',
-            'blame_user_firewall' => ':blame_user_firewall',
-            'ip' => ':ip',
+            'blame_user_type' => ':blame_user_type',
             'created_at' => ':created_at',
         ];
 
