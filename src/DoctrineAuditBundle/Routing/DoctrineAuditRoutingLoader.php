@@ -15,7 +15,7 @@ class DoctrineAuditRoutingLoader extends Loader implements LoaderInterface
 
     private $configuration;
 
-    public function load($resource, string $type = null): RouteCollection
+    public function load($resource, $type = null)
     {
         $routeCollection = new RouteCollection();
         if (true === $this->configuration['enabled_viewer']) {
@@ -25,7 +25,7 @@ class DoctrineAuditRoutingLoader extends Loader implements LoaderInterface
         return $routeCollection;
     }
 
-    public function supports($resource, ?string $type = null)
+    public function supports($resource, $type = null)
     {
         return 'audit_loader' === $type;
     }
